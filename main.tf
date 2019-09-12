@@ -3,23 +3,17 @@ provider "aws" {
   profile = "satevg"
 }
 
-data "aws_ami" "ubuntu" {
-  most_recent = true
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"]
+resource "aws_key_pair" "default_ssh_key" {
+  key_name = "ssh_EC2_Key"
+  public_key = "${file(var.ssh_public_key)}"
 }
 
 resource "aws_instance" "web" {
-  ami           = "${data.aws_ami.ubuntu.id}"
+  ami           = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.subnet_first.id}"
   security_groups = ["${aws_security_group.ingress_all.id}"]
-  key_name = "sshEC2"
+  key_name = "${aws_key_pair.default_ssh_key.id}"
 
   tags = {
     Name = "BaseImage"
