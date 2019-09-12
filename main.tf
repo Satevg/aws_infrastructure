@@ -1,6 +1,17 @@
 provider "aws" {
   region = "eu-central-1"
   profile = "satevg"
+  version = "~> 2.27"
+}
+
+terraform {
+  backend "s3" {
+    key = "terraform.tfstate"
+    region = "eu-central-1"
+    bucket = "tfstate-lock"
+    dynamodb_table = "tfstate-lock-table"
+    encrypt = false
+  }
 }
 
 resource "aws_key_pair" "default_ssh_key" {
@@ -9,10 +20,10 @@ resource "aws_key_pair" "default_ssh_key" {
 }
 
 resource "aws_instance" "web" {
-  ami           = "ami-0ac05733838eabc06"
+  ami = "ami-0ac05733838eabc06"
   instance_type = "t2.micro"
   subnet_id = "${aws_subnet.subnet_first.id}"
-  security_groups = ["${aws_security_group.ingress_all.id}"]
+  vpc_security_group_ids = ["${aws_security_group.ingress_all.id}"]
   key_name = "${aws_key_pair.default_ssh_key.id}"
 
   tags = {
