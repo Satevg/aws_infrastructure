@@ -30,3 +30,19 @@ resource "aws_instance" "web" {
     Name = "BaseImage"
   }
 }
+
+resource "aws_ebs_volume" "web_ebs_volume" {
+  availability_zone = "${aws_instance.web.availability_zone}"
+  type = "gp2"
+  size = 4
+
+  tags = {
+    Name = "Volume for Base EC2 instance"
+  }
+}
+
+resource "aws_volume_attachment" "example-volume-attachment" {
+  device_name = "/dev/sdh"
+  instance_id = "${aws_instance.web.id}"
+  volume_id   = "${aws_ebs_volume.web_ebs_volume.id}"
+}
