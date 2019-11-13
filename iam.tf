@@ -22,6 +22,29 @@ data "aws_iam_policy_document" "x-tg-bot-lambda-policy-document" {
       "*"
     ]
   }
+
+  statement {
+    actions = [
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:DescribeTable",
+      "dynamodb:GetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:BatchGetItem",
+      "dynamodb:DescribeTable",
+      "dynamodb:GetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan"
+    ]
+
+    resources = [
+      "arn:aws:dynamodb:eu-central-1:650008541835:table/game-stats-main"
+    ]
+  }
 }
 
 
@@ -40,7 +63,7 @@ resource "aws_iam_role" "x-tg-bot-role" {
     {
       "Action": "sts:AssumeRole",
       "Principal": {
-        "Service": ["ec2.amazonaws.com"]
+        "Service": ["lambda.amazonaws.com"]
       },
       "Effect": "Allow",
       "Sid": ""
